@@ -1,11 +1,9 @@
-on:
-  pull_request_review:
-    types: [edited, submitted]
+name: Build Test Branch
+
+on: pull_request
 
 jobs:
   build:
-    if: github.event.review.state == 'approved'
-
     runs-on: ubuntu-latest
 
     steps:
@@ -19,16 +17,16 @@ jobs:
         with:
           branch: ${{ github.head_ref }}-test
 
-      - name: Install Compucorp-Stripe dependencies
-        working-directory: ${{ env.CIVICRM_EXTENSIONS_DIR }}/uk.co.compucorp.stripe
+      - name: Install dependencies
         run: composer install
 
       - name: Commit changes
         uses: EndBug/add-and-commit@v7
         with:
+          branch: ${{ github.head_ref }}-test
           author_name: Your Name
           author_email: mail@example.com
           message: 'Your commit message'
-          add: '*.js'
+          add: 'vendor/*'
           push: true
 
