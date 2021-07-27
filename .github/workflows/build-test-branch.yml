@@ -1,11 +1,9 @@
-on:
-  pull_request_review:
-    types: [edited, submitted]
+name: Build Test Branch
+
+on: pull_request
 
 jobs:
   build:
-    if: github.event.review.state == 'approved'
-
     runs-on: ubuntu-latest
 
     steps:
@@ -19,16 +17,23 @@ jobs:
         with:
           branch: ${{ github.head_ref }}-test
 
-      - name: Install Compucorp-Stripe dependencies
-        working-directory: ${{ env.CIVICRM_EXTENSIONS_DIR }}/uk.co.compucorp.stripe
+      - name: Install dependencies
         run: composer install
+
+      - name: Set environment variables
+        run: |
+          echo PUBLISHABLE_KEY="${{ secrets.PUBLISHABLE_KEY }}" >> .env
+          echo SECRET_KEY="${{ secrets.SECRET_KEY }}" >> .env
+          echo URL_SITE="${{ secrets.URL_SITE }}" >> .env
+          echo TEST_PUBLISHABLE_KEY="${{ secrets.TEST_PUBLISHABLE_KEY }}" >> .env
+          echo TEST_SECRET_KEY="${{ secrets.TEST_SECRET_KEY }}" >> .env
+          echo TEST_URL_SITE="${{ secrets.TEST_URL_SITE }}" >> .env
+          echo TEST_MODE=1 >> .env
 
       - name: Commit changes
         uses: EndBug/add-and-commit@v7
         with:
-          author_name: Your Name
-          author_email: mail@example.com
-          message: 'Your commit message'
-          add: '*.js'
+          branch: ${{ github.head_ref }}-test
+          message: 'Add files for deploy'
+          add: 'vendor/* .env -f'
           push: true
-
