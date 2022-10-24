@@ -29,6 +29,7 @@ jobs:
           upload_url: ${{ github.event.release.upload_url}} 
           asset_path: ./compuclient-${{ github.event.release.tag_name }}.txt
           asset_name: compuclient-${{ github.event.release.tag_name }}.txt
+          asset_content_type: text/plain
 
       - name: Upload Release Asset (retry)
         id: upload-release-asset-retry
@@ -39,4 +40,4 @@ jobs:
           upload_url: ${{ github.event.release.upload_url}}
           asset_path: ./compuclient-${{ github.event.release.tag_name }}.txt
           asset_name: compuclient-${{ github.event.release.tag_name }}.txt
-
+          asset_content_type: text/plain
