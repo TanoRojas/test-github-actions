@@ -21,8 +21,7 @@ jobs:
       - name: Build tarball Fake for test
         shell: bash
         run: |
-          truncate -s 60M file-${{ github.event.release.tag_name }}.txt
-          tar czf compuclient-ssp-${{ github.event.release.tag_name }}.tar.gz file-${{ github.event.release.tag_name }}.txt
+          truncate -s 60M compuclient-ssp-${{ github.event.release.tag_name }}.txt
 
       - name: Upload Release Asset
         id: upload-release-asset
@@ -30,9 +29,8 @@ jobs:
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ github.event.release.upload_url}}
-          asset_path: ./compuclient-ssp-${{ github.event.release.tag_name }}.tar.gz
-          asset_name: compuclient-ssp-${{ github.event.release.tag_name }}.tar.gz
-          asset_content_type: application/gzip
+          asset_path: ./compuclient-ssp-${{ github.event.release.tag_name }}.txt
+          asset_name: compuclient-ssp-${{ github.event.release.tag_name }}.txt
 
       - name: Upload Release Asset (retry)
         id: upload-release-asset-retry
@@ -41,6 +39,5 @@ jobs:
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ github.event.release.upload_url}}
-          asset_path: ./compuclient-ssp-${{ github.event.release.tag_name }}.tar.gz
-          asset_name: compuclient-ssp-${{ github.event.release.tag_name }}.tar.gz
-          asset_content_type: application/gzip
+          asset_path: ./compuclient-ssp-${{ github.event.release.tag_name }}.txt
+          asset_name: compuclient-ssp-${{ github.event.release.tag_name }}.txt
