@@ -19,15 +19,27 @@ jobs:
       - name: Build tarball Fake for test
         shell: bash
         run: |
-          touch file-${{ github.event.release.tag_name }}.txt
+          truncate -s 60M file-${{ github.event.release.tag_name }}.txt
           tar czf compuclient-${{ github.event.release.tag_name }}.tar.gz file-${{ github.event.release.tag_name }}.txt
                     
       - name: Upload Release Asset
-        id: upload-release-asset 
+        id: upload-release-asset
+        continue-on-error: true
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ github.event.release.upload_url}} 
           asset_path: ./compuclient-${{ github.event.release.tag_name }}.tar.gz
           asset_name: compuclient-${{ github.event.release.tag_name }}.tar.gz
           asset_content_type: application/gzip
-          
+
+      - name: Upload Release Asset (retry)
+        id: upload-release-asset-retry
+        if: steps.upload-release-asset.outcome == 'failure'
+        continue-on-error: true
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ github.event.release.upload_url}}
+          asset_path: ./compuclient-${{ github.event.release.tag_name }}.tar.gz
+          asset_name: compuclient-${{ github.event.release.tag_name }}.tar.gz
+          asset_content_type: application/gzip
+
